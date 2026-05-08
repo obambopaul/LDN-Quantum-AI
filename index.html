@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LDN Quantum | AI Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .quantum-glow { color: #10b981; text-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+        .card-gradient { background: linear-gradient(145deg, #1e293b, #020617); border: 1px solid #334155; }
+        .btn-active { background: #10b981 !important; color: white !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+        input { outline: none; }
+    </style>
+</head>
+<body class="p-4 md:p-10 flex flex-col items-center">
+
+    <div class="w-full max-w-md">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-2">
+                <div class="bg-emerald-500 p-2 rounded-xl shadow-lg">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tighter uppercase italic">Quantum<span class="text-emerald-500">.AI</span></h1>
+            </div>
+            <div class="bg-slate-900 px-3 py-1.5 rounded-full border border-slate-800 text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                LDN Hub: 36542
+            </div>
+        </div>
+
+        <!-- AI PREDICTION (Automatically active) -->
+        <div class="glass rounded-[2.5rem] p-8 mb-6 text-center shadow-2xl relative overflow-hidden border-t border-emerald-500/20">
+            <p class="text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4">AI Recommended Entry</p>
+            <div id="ai-digit" class="text-9xl font-black quantum-glow leading-none mb-4">-</div>
+            <div id="ai-prob" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Analyzing Sequence...</div>
+            
+            <!-- Stats Bar -->
+            <div class="flex justify-between mt-8 pt-6 border-t border-white/5">
+                <div>
+                    <p class="text-[8px] font-bold text-slate-500 uppercase mb-1">Max Gap</p>
+                    <p id="max-gap" class="text-lg font-black text-white">0</p>
+                </div>
+                <div>
+                    <p class="text-[8px] font-bold text-slate-500 uppercase mb-1">Session P/L</p>
+                    <p id="total-pl" class="text-lg font-black text-white">$0.00</p>
+                </div>
+                <div>
+                    <p class="text-[8px] font-bold text-slate-500 uppercase mb-1">Live Tick</p>
+                    <p id="live-tick" class="text-lg font-black text-emerald-500">-</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bot Selection -->
+        <div class="grid grid-cols-3 gap-2 mb-6">
+            <button onclick="setBot('seven')" id="b-seven" class="btn-active glass p-3 rounded-xl text-[9px] font-black uppercase">Seven</button>
+            <button onclick="setBot('flash')" id="b-flash" class="glass text-slate-500 p-3 rounded-xl text-[9px] font-black uppercase">Flash</button>
+            <button onclick="setBot('parity')" id="b-parity" class="glass text-slate-500 p-3 rounded-xl text-[9px] font-black uppercase">Parity</button>
+        </div>
+
+        <!-- Control Console -->
+        <div class="glass rounded-[2rem] p-6 space-y-4 shadow-xl border-t border-emerald-500/20">
+            <div class="flex justify-between items-center px-1">
+                <div class="flex items-center gap-2">
+                    <div id="status-dot" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                    <span id="status-text" class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Awaiting Login</span>
+                </div>
+                <p id="balance" class="text-xs font-bold text-emerald-400">$0.00</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800">
+                    <label class="text-[8px] font-bold text-slate-500 uppercase block mb-1 ml-1">Stake ($)</label>
+                    <input type="number" id="stake" value="1" class="bg-transparent text-xl font-black text-white w-full" />
+                </div>
+                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800">
+                    <label class="text-[8px] font-bold text-slate-500 uppercase block mb-1 ml-1">Accuracy</label>
+                    <input type="number" id="vlimit" value="3" class="bg-transparent text-xl font-black text-white w-full" />
+                </div>
+            </div>
+
+            <div class="relative flex items-center">
+                <input type="password" id="token" placeholder="Paste Deriv Token" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-5 py-4 text-emerald-400 font-mono text-xs focus:border-emerald-500 transition-all" />
+                <button onclick="connect()" id="main-btn" class="absolute right-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-lg transition-all active:scale-90">Connect</button>
+            </div>
+        </div>
+
+        <div id="logs" class="mt-4 bg-black/30 rounded-xl p-4 h-24 overflow-y-auto font-mono text-[9px] text-slate-600 space-y-1">
+            > Quantum Engine Initialized...<br>
+            > Accessing London AWS LD4 Trading Hub...
+        </div>
+    </div>
+
+    <script>
+        let ws, isAuthorized = false, activeBot = 'seven', vCount = 0;
+        let gaps = Array(10).fill(0), totalPL = 0, initialStake = 1, stake = 1;
+        const GUEST_ID = "36542";
+
+        function initAnalyzer() {
+            ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${GUEST_ID}`);
+            ws.onopen = () => { ws.send(JSON.stringify({ ticks: "R_100", subscribe: 1 })); };
+            ws.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                if (data.msg_type === 'authorize') handleAuth(data.authorize);
+                if (data.tick) handleTick(data.tick);
+                if (data.msg_type === 'proposal_open_contract' && data.proposal_open_contract.is_sold) handleResult(data.proposal_open_contract);
+                if (data.error) { addLog(data.error.message, 'text-red-500'); }
+            };
+        }
+
+        function handleTick(tick) {
+            const d = parseInt(tick.quote.toString().slice(-1));
+            document.getElementById('live-tick').innerText = d;
+            
+            for(let i=0; i<=9; i++) { if(i === d) gaps[i] = 0; else gaps[i]++; }
+            
+            let coldest = gaps.indexOf(Math.max(...gaps));
+            let maxG = gaps[coldest];
+            document.getElementById('ai-digit').innerText = coldest;
+            document.getElementById('max-gap').innerText = maxG;
+            document.getElementById('ai-prob').innerText = `Probability: ${Math.min((maxG/30)*100, 100).toFixed(0)}% OVERDUE`;
+
+            if (isAuthorized) {
+                let winOnPaper = (activeBot === 'seven' && d > 7) || (activeB
